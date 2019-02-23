@@ -9,6 +9,8 @@ class Gallery {
         this.postSrcs = postSrcs;
         this.posts = [];
         this.loadedCount = 0;
+        this.loaded = false;
+        this.reached = false;
         this.animating = false;
 
         this.index = 1;
@@ -33,10 +35,18 @@ class Gallery {
             img.onload = ()=>{
                 this.loadedCount += 1;
                 if (this.loadedCount === this.postSrcs.length) {
+                    this.loaded = true;
                     this.showGallery();
                 }
             }
         });
+    }
+
+    displayGallery() {
+        console.log(this.reached, this.loaded);
+        if (this.reached && this.loaded) {
+            this.DOM.el.style.opacity = '1';
+        }
     }
 
     showGallery() {
@@ -59,11 +69,12 @@ class Gallery {
         nav[0].addEventListener('click', ()=>{this.changePost(-1)});
         nav[1].addEventListener('click', ()=>{this.changePost(1)});
 
-        this.DOM.el.style.opacity = "1";
+        this.displayGallery();
         
     }
 
     changePost(d) {
+        if (this.animating) return;
         let newIndex = this.index + d;
         if (newIndex >= this.posts.length) {
             newIndex = 0;
@@ -78,7 +89,7 @@ class Gallery {
         setTimeout(()=>{
             loadingBar.classList.remove('animating');
             this.displayPost(d);
-
+            this.animating = false;
           
         }, 800);
 
@@ -120,11 +131,14 @@ class Gallery {
     }
 }
 
-const posts = [
+
+
+const gallery_posts = [
     'https://i.imgur.com/akLELLk.jpg',
     'https://i.pinimg.com/736x/3e/2e/8c/3e2e8c6fa626636eb4e8bdfe78edab3b--redhead-girl-beautiful-redhead.jpg',
     'https://media.glamour.com/photos/5978ff1b73aedb63556f3a04/1:1/w_1683,h_1683,c_limit/dakota-johnson-beauty-river.jpg',
     'https://profoto.azureedge.net/cdn/04a371f/contentassets/7784c9eed38149edb9a6029cede7a9ff/profoto-d2-rossella-vanon-final-setup-3-001.jpg',
     'https://www.shutterbug.com/images/styles/600_wide/public/Promobl6618.jpg'
 ];
-const gallery = new Gallery(document.getElementById('gallery-1'), posts);
+const gallery_1 = new Gallery(document.getElementById('gallery-1'), gallery_posts);
+

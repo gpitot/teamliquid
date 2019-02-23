@@ -38,22 +38,38 @@ main {
         display:flex;
         flex-direction: column;
         h1 {
-
+            
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
             span {transition:color 0.3s ease-in;}
             font-size:10rem;
-            color:white;
+            color:$BRANDBLUE;
             text-decoration: uppercase;
             text-align:center;
             background: #242526;
             cursor: pointer;
-            margin-bottom:0;
+            margin:0;
             .squad-hover {color:$BRANDBLUE; }
         }
-        .canvas {
-            width:100%;
-            background:red;
-            height:500px;
+
+
+
+        #interactive-banner {
+            display:flex;
+            flex-flow:row wrap;
+            overflow:hidden;
+            cursor: none;
+            .square {
+                transition: transform 0.8s ease-in-out;
+                transform:scale(0);
+                filter:brightness(0.6);
+                &:hover {
+                    border:solid 1px $YELLOWBACKGROUND;
+                    filter:brightness(1);
+                }
+            }
         }
+        
     }
 
 
@@ -71,7 +87,10 @@ main {
 
             .heading {
                 font-size: 5rem;
-                margin: 3rem 0 1.5rem -75px;
+                transition: all 0.8s ease-in-out;
+                margin: 3rem 0 1.5rem 0;
+                opacity:0;
+
                 color: $BLUE;
                 letter-spacing: .2rem;
                 line-height: 5rem;
@@ -167,7 +186,7 @@ main {
         .loading-bar {
             grid-column:hidden-left-side-post / right-side-post;
             grid-row : loading-bar;
-            background:$BRANDBLUE;
+            background:$BLUE;
 
             
             width:0;
@@ -182,7 +201,7 @@ main {
 
     .interactive {
         width:100%;
-        background:$DARKBACKGROUND;
+        background:#eee;
 
 
         .interactive-inner {
@@ -195,7 +214,7 @@ main {
             .wide-area {
                 width:1000px;
                 height:550px;
-                background:$YELLOWBACKGROUND;
+                background:$DARKBACKGROUND;
                 margin-right:50px;
             }
 
@@ -204,13 +223,19 @@ main {
                 width:350px;
                 height:550px;
                 background:wheat;
-
+                box-shadow:0 3px 4px #00000096;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
                 display:flex;
                 flex-direction: column;
+
+               cursor: pointer;
 
                 .headshot {
                     height:50%;
                     background:$BRANDBLUE;
+                    border-top-left-radius: 5px;
+                    border-top-right-radius: 5px;
                     img {
                         display:none;
                     }
@@ -219,7 +244,7 @@ main {
 
                 .player-info {
                     padding:25px;
-
+                    
                     .player-name-outer {
                         margin-top: calc(-25px - 1.5rem);
                         .player-name {
