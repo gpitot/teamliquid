@@ -71,7 +71,7 @@ class TileAnimation {
         
 
         const numColumns = 25;
-        const squareSize = Math.floor(width / numColumns);
+        const squareSize = width / numColumns;
         const numRows = Math.ceil(height / squareSize);
 
         
@@ -81,7 +81,6 @@ class TileAnimation {
         //then set scale to 1
         let x = 0;
         let y = 0;
-
         function drawTile() {
             if (x >= numColumns) {
                 x = 0;
@@ -102,7 +101,7 @@ class TileAnimation {
             square.style.width = squareSize + 'px';
             square.style.backgroundPositionX = -(x * squareSize) + 'px';
             square.style.backgroundPositionY = -(y * squareSize) + 'px';
-            square.style.backgroundSize = '1903px';
+            square.style.backgroundSize = width + 'px';
             
             el.appendChild(square);
 

@@ -8,7 +8,8 @@ var prefix = require('gulp-autoprefixer');
 var cssmin      = require('gulp-cssnano');
 var rename      = require('gulp-rename');
 var plumber     = require('gulp-plumber');
-var notify      = require('gulp-notify')
+var notify      = require('gulp-notify');
+var ghPages = require('gulp-gh-pages');
 
 var browserSync = require('browser-sync').create();
  
@@ -90,4 +91,12 @@ gulp.task('build', gulp.series('clean', 'scripts', 'sass', 'fonts', 'images', 'h
 
 gulp.task('default', gulp.series('build', 'watch'), function(cb) {
     cb();
+});
+
+
+
+
+gulp.task('deploy', function () {
+  return gulp.src("./build/**/*")
+    .pipe(ghPages())
 });
