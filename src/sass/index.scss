@@ -5,6 +5,7 @@ html, body {
     margin:0;
     padding:0;
     font-family: 'Poppins', sans-serif;
+    background: #eee;
 }
 
 
@@ -34,7 +35,7 @@ main {
     .banner {
         width:100%;
         
-        background: $YELLOWBACKGROUND;
+        background: #eab10a;
         display:flex;
         flex-direction: column;
         h1 {
@@ -49,7 +50,14 @@ main {
             background: #242526;
             cursor: pointer;
             margin:0;
-            .squad-hover {color:$BRANDBLUE; }
+            .squad-hover {color:$BLUE; }
+
+            @media (max-width:790px) {
+                font-size:5rem;
+            }
+            @media (max-width:375px) {
+                font-size:3rem;
+            }
         }
 
 
@@ -81,9 +89,16 @@ main {
         max-width: 100%;
         margin:50px auto 50px;
 
+        @media (max-width:$INNERWIDTH) {
+            flex-direction: column;
+        }
 
         .column {
             width:$COLUMNWIDTH;
+            max-width:calc(100% - 60px);
+            @media (max-width:$INNERWIDTH) {
+                margin:auto;
+            }
 
             .heading {
                 font-size: 5rem;
@@ -95,12 +110,23 @@ main {
                 letter-spacing: .2rem;
                 line-height: 5rem;
 
+                @media (max-width:600px) {
+                    font-size:3.5rem;
+                    line-height:3.5rem;
+                }
+
+                @media (max-width:375px) {
+                    font-size:2rem;
+                    line-height: 2rem;
+                }
+
                 .line-two {
                     color:$BRANDBLUE;
                     //text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
                 }
             }
 
+           
             p {
                 margin: 2em;
             }
@@ -111,12 +137,17 @@ main {
 
     .gallery-outer {
         width:550px;
+        max-width:calc(100% - 60px);
+        margin:auto;
         height:600px;
         top:40px;
         margin-top:240px;
         position:sticky;
 
-        
+        @media (max-width : $INNERWIDTH) {
+            margin-top:25px;
+            height: 400px;
+        }
 
         .gallery, .navigation {
             position:absolute;
@@ -127,6 +158,29 @@ main {
             display :grid;
             grid-template-columns : [left-side-post] 1fr [hidden-left-side-post] 2fr [center-post] 3fr [hidden-right-side-post] 2fr [right-side-post] 1fr [end-area] 0;
             grid-template-rows: [top-area] 1fr [middle-area] 6fr  [bottom-area] 1fr [loading-bar] 8px [end-area] 0;
+        }
+
+
+
+        #dot-gallery-image {
+            width:100%;
+            height:100%;
+            position: relative;
+            z-index: 1;
+            img {
+                width: 100%;
+                height:100%;
+                object-fit: cover;
+                //filter:grayscale(1);
+            }
+        }
+        #dot-gallery-canvas {
+            position: absolute;
+            top:0;
+            left:0;
+            z-index:2;
+            user-select: none;
+            cursor: pointer;
         }
     }
    
@@ -201,7 +255,7 @@ main {
 
     .interactive {
         width:100%;
-        background:#eee;
+        background:$DARKBACKGROUND;
 
 
         .interactive-inner {
@@ -210,26 +264,53 @@ main {
             padding:50px;
             width:100%;
 
+            @media (max-width : $INNERWIDTH) {
+                flex-direction: column;
+                padding:0;
+            }
+
 
             .wide-area {
                 width:1000px;
+                max-width: 100%;
                 height:550px;
-                background:$DARKBACKGROUND;
+                background:#eee;
                 margin-right:50px;
+                position: relative;
+
+                @media (max-width : $INNERWIDTH) {
+                    margin-right: 0;
+                    margin-bottom:25px;
+                }
+
+
+                #teams {
+                    position: absolute;
+                    left: 75px;
+                    top: calc(50% - 3px);
+                    width: calc(100% - 150px);
+                    height: 6px;
+                    background: black;
+                }
             }
 
             .card {
                 position: relative;
                 width:350px;
+                max-width:calc(100% - 80px);
                 height:550px;
                 background:wheat;
                 box-shadow:0 3px 4px #00000096;
-                border-bottom-left-radius: 5px;
-                border-bottom-right-radius: 5px;
+                border-radius:5px;
                 display:flex;
                 flex-direction: column;
 
-               cursor: pointer;
+                cursor: pointer;
+
+                @media (max-width : $INNERWIDTH) {
+                    margin:auto;
+                    margin-bottom:25px;
+                }
 
                 .headshot {
                     height:50%;

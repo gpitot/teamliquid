@@ -3,7 +3,7 @@ class TileAnimation {
         this.loadedCount = 0;
         this.images = [];
         this.index = 0;
-        this.postSrcs = postSrcs;
+        this.postSrcsAll = postSrcs;
 
         this.DOM = {el : el};
 
@@ -14,7 +14,7 @@ class TileAnimation {
 
 
         this.resizeCanvas();
-        this.loadPosts();
+       
 
         
 
@@ -23,15 +23,17 @@ class TileAnimation {
     }
     loadPosts() {
         //loads posts
-        const postSrcs = this.postSrcs;
-        postSrcs.forEach((src) => {
+        this.postSrcs = window.innerWidth > window.innerHeight ? this.postSrcsAll.landscape : this.postSrcsAll.portrait;
+        this.images = [];
+        this.loadedCount = 0;
+        this.postSrcs.forEach((src) => {
             let img = new Image();
             img.src = src;
             this.images.push(img);
             img.onload = ()=>{
                 this.loadedCount += 1;
                 if (this.loadedCount === this.postSrcs.length) {
-                    this.startAnimation();
+                    this.changeImages();
                 }
             }
         });
@@ -40,6 +42,8 @@ class TileAnimation {
         this.DOM.width = this.DOM.el.getBoundingClientRect().width;
         this.DOM.height = window.innerHeight - (this.DOM.el.getBoundingClientRect().top + window.pageYOffset);
         this.DOM.el.style.maxHeight = this.DOM.height + 'px';
+
+        this.loadPosts();
     }
 
 
@@ -68,13 +72,33 @@ class TileAnimation {
         const imageSrc = this.postSrcs[this.index];
         const image = this.images[this.index];
         const {el, width, height} = this.DOM;
+        //width height = window width and height
+        
+        let numColumns;
+        if (width > 1400) {
+            numColumns = 25;
+        } else if (width > 1000) {
+            numColumns = 12;
+        } else if (width > 750) {
+            numColumns = 8;
+        } else {
+            numColumns = 6;
+        }
+
         
 
-        const numColumns = 25;
+
         const squareSize = width / numColumns;
-        const numRows = Math.ceil(height / squareSize);
+        let numRows = Math.ceil(height / squareSize);
 
-        
+
+        const ratio = width / image.width;
+        const imageScaledHeight = image.height * ratio;
+        const maxRows = imageScaledHeight / squareSize;
+
+        if (numRows > maxRows) {
+            numRows = maxRows;
+        }
 
         //for each col/ row make a div in it with correct layout
         //set background-position
@@ -89,7 +113,7 @@ class TileAnimation {
             if (y >= numRows) {
                 setTimeout(()=>{
                     animate();
-                }, 500);
+                }, 50);
                 return;
             };
 
@@ -124,13 +148,19 @@ class TileAnimation {
 }
 
 
-const posts = [
-    
-    'images/interactive/surf.jpeg',
-    'images/interactive/surf2.jpeg',
-    'images/interactive/lake.jpeg',
-    'images/interactive/mountain.jpeg',
-    'images/interactive/mountain2.jpeg',
-    'images/interactive/doubleliftheader.png',
-]
+const posts = {
+    portrait : [
+        'https://i.pinimg.com/originals/dd/59/4e/dd594e241abf617abed2b7d586c19ef9.jpg',
+        'https://pmcvariety.files.wordpress.com/2018/01/carey-mulligan1.jpg?w=700',
+        'https://c1.staticflickr.com/6/5279/7391181022_ee25fe55fd_b.jpg'
+    ],  
+    landscape : [
+        'images/interactive/surf.jpeg',
+        'images/interactive/surf2.jpeg',
+        'images/interactive/lake.jpeg',
+        'images/interactive/mountain.jpeg',
+        'images/interactive/mountain2.jpeg',
+    ]
+}
+
 const tileAnim = new TileAnimation(document.getElementById('interactive-banner'), posts);

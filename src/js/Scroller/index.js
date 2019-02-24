@@ -7,6 +7,8 @@ class Scroller {
         this.handleScroll = this.handleScroll.bind(this);
 
         window.addEventListener('scroll', this.handleScroll);
+
+        
     }
 
     addPoint(point) {
@@ -23,7 +25,7 @@ class Scroller {
         
         //order points by y point (REVERSE ORDER SO CAN REMOVE IN LOOP LATER)
         this.points = this.points.sort((a,b)=>{return (point.offsetTop < b.offsetTop) ? 1 : -1})
-       
+        this.handleScroll();
     }
 
 
@@ -66,7 +68,7 @@ scroller.addPoint({
 
 
 const headings = document.querySelectorAll('.heading');
-const marginLeft = window.innerWidth > 1000 ? '-75px' : '0';
+const marginLeft = window.innerWidth > 1450 ? '-75px' : '0';
 headings.forEach((heading)=>{
     scroller.addPoint({
         element: heading,
