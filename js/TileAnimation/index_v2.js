@@ -15,7 +15,7 @@ function () {
     this.loadedCount = 0;
     this.images = [];
     this.index = 0;
-    this.postSrcs = postSrcs;
+    this.postSrcsAll = postSrcs;
     this.DOM = {
       el: el
     };
@@ -23,7 +23,6 @@ function () {
     this.resizeCanvas = this.resizeCanvas.bind(this);
     this.changeImages = this.changeImages.bind(this);
     this.resizeCanvas();
-    this.loadPosts();
     this.DOM.el.addEventListener('click', this.changeImages);
     window.addEventListener('resize', this.resizeCanvas);
   }
@@ -34,8 +33,10 @@ function () {
       var _this = this;
 
       //loads posts
-      var postSrcs = this.postSrcs;
-      postSrcs.forEach(function (src) {
+      this.postSrcs = window.innerWidth > window.innerHeight ? this.postSrcsAll.landscape : this.postSrcsAll.portrait;
+      this.images = [];
+      this.loadedCount = 0;
+      this.postSrcs.forEach(function (src) {
         var img = new Image();
         img.src = src;
 
@@ -45,7 +46,7 @@ function () {
           _this.loadedCount += 1;
 
           if (_this.loadedCount === _this.postSrcs.length) {
-            _this.startAnimation();
+            _this.changeImages();
           }
         };
       });
@@ -56,6 +57,7 @@ function () {
       this.DOM.width = this.DOM.el.getBoundingClientRect().width;
       this.DOM.height = window.innerHeight - (this.DOM.el.getBoundingClientRect().top + window.pageYOffset);
       this.DOM.el.style.maxHeight = this.DOM.height + 'px';
+      this.loadPosts();
     }
   }, {
     key: "changeImages",
@@ -90,12 +92,32 @@ function () {
       var _this$DOM = this.DOM,
           el = _this$DOM.el,
           width = _this$DOM.width,
-          height = _this$DOM.height;
-      var numColumns = 25;
+          height = _this$DOM.height; //width height = window width and height
+
+      var numColumns;
+
+      if (width > 1400) {
+        numColumns = 25;
+      } else if (width > 1000) {
+        numColumns = 12;
+      } else if (width > 750) {
+        numColumns = 8;
+      } else {
+        numColumns = 6;
+      }
+
       var squareSize = width / numColumns;
-      var numRows = Math.ceil(height / squareSize); //for each col/ row make a div in it with correct layout
+      var numRows = Math.ceil(height / squareSize);
+      var ratio = width / image.width;
+      var imageScaledHeight = image.height * ratio;
+      var maxRows = imageScaledHeight / squareSize;
+
+      if (numRows > maxRows) {
+        numRows = maxRows;
+      } //for each col/ row make a div in it with correct layout
       //set background-position
       //then set scale to 1
+
 
       var x = 0;
       var y = 0;
@@ -109,7 +131,7 @@ function () {
         if (y >= numRows) {
           setTimeout(function () {
             animate();
-          }, 500);
+          }, 50);
           return;
         }
 
@@ -140,5 +162,8 @@ function () {
   return TileAnimation;
 }();
 
-var posts = ['images/interactive/surf.jpeg', 'images/interactive/surf2.jpeg', 'images/interactive/lake.jpeg', 'images/interactive/mountain.jpeg', 'images/interactive/mountain2.jpeg', 'images/interactive/doubleliftheader.png'];
+var posts = {
+  portrait: ['https://i.pinimg.com/originals/dd/59/4e/dd594e241abf617abed2b7d586c19ef9.jpg', 'https://pmcvariety.files.wordpress.com/2018/01/carey-mulligan1.jpg?w=700', 'https://c1.staticflickr.com/6/5279/7391181022_ee25fe55fd_b.jpg'],
+  landscape: ['images/interactive/surf.jpeg', 'images/interactive/surf2.jpeg', 'images/interactive/lake.jpeg', 'images/interactive/mountain.jpeg', 'images/interactive/mountain2.jpeg']
+};
 var tileAnim = new TileAnimation(document.getElementById('interactive-banner'), posts);

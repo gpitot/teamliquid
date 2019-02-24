@@ -34,6 +34,7 @@ function () {
       this.points = this.points.sort(function (a, b) {
         return point.offsetTop < b.offsetTop ? 1 : -1;
       });
+      this.handleScroll();
     }
   }, {
     key: "handleScroll",
@@ -78,7 +79,7 @@ scroller.addPoint({
   }
 });
 var headings = document.querySelectorAll('.heading');
-var marginLeft = window.innerWidth > 1000 ? '-75px' : '0';
+var marginLeft = window.innerWidth > 1450 ? '-75px' : '0';
 headings.forEach(function (heading) {
   scroller.addPoint({
     element: heading,
