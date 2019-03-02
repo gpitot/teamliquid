@@ -19,10 +19,13 @@ function () {
     this.DOM = {
       el: el
     };
-    this.animationTime = 800;
+    this.animationTime = 810;
     this.resizeCanvas = this.resizeCanvas.bind(this);
     this.changeImages = this.changeImages.bind(this);
+    this.loadDivs = this.loadDivs.bind(this);
+    this.startAnimation = this.startAnimation.bind(this);
     this.resizeCanvas();
+    this.loadPosts();
     this.DOM.el.addEventListener('click', this.changeImages);
     window.addEventListener('resize', this.resizeCanvas);
   }
@@ -46,7 +49,7 @@ function () {
           _this.loadedCount += 1;
 
           if (_this.loadedCount === _this.postSrcs.length) {
-            _this.changeImages();
+            _this.loadDivs();
           }
         };
       });
@@ -57,42 +60,22 @@ function () {
       this.DOM.width = this.DOM.el.getBoundingClientRect().width;
       this.DOM.height = window.innerHeight - (this.DOM.el.getBoundingClientRect().top + window.pageYOffset);
       this.DOM.el.style.maxHeight = this.DOM.height + 'px';
-      this.loadPosts();
     }
   }, {
-    key: "changeImages",
-    value: function changeImages() {
+    key: "loadDivs",
+    value: function loadDivs() {
       var _this2 = this;
 
-      this.index += 1;
-
-      if (this.index >= this.images.length) {
-        this.index = 0;
-      }
-
-      var el = this.DOM.el;
-
-      for (var i = 0; i < el.children.length; i++) {
-        el.children[i].style.transform = "scale(0)";
-      }
-
-      setTimeout(function () {
-        while (el.firstChild) {
-          el.removeChild(el.firstChild);
-        }
-
-        _this2.startAnimation();
-      }, this.animationTime);
-    }
-  }, {
-    key: "startAnimation",
-    value: function startAnimation() {
-      var imageSrc = this.postSrcs[this.index];
-      var image = this.images[this.index];
+      //called whenever resized
       var _this$DOM = this.DOM,
           el = _this$DOM.el,
           width = _this$DOM.width,
-          height = _this$DOM.height; //width height = window width and height
+          height = _this$DOM.height;
+      var image = this.images[this.index];
+
+      while (el.firstChild) {
+        el.removeChild(el.firstChild);
+      }
 
       var numColumns;
 
@@ -122,7 +105,7 @@ function () {
       var x = 0;
       var y = 0;
 
-      function drawTile() {
+      var drawTile = function drawTile() {
         if (x >= numColumns) {
           x = 0;
           y += 1;
@@ -130,7 +113,7 @@ function () {
 
         if (y >= numRows) {
           setTimeout(function () {
-            animate();
+            _this2.startAnimation();
           }, 50);
           return;
         }
@@ -138,7 +121,6 @@ function () {
         ;
         var square = document.createElement('div');
         square.classList.add('square');
-        square.style.backgroundImage = "url(".concat(imageSrc, ")");
         square.style.height = squareSize + 'px';
         square.style.width = squareSize + 'px';
         square.style.backgroundPositionX = -(x * squareSize) + 'px';
@@ -147,14 +129,40 @@ function () {
         el.appendChild(square);
         x += 1;
         drawTile();
-      }
+      };
 
       drawTile();
+    }
+  }, {
+    key: "changeImages",
+    value: function changeImages() {
+      var _this3 = this;
 
-      function animate() {
-        for (var i = 0; i < el.children.length; i++) {
-          el.children[i].style.transform = "scale(1)";
-        }
+      this.index += 1;
+
+      if (this.index >= this.images.length) {
+        this.index = 0;
+      }
+
+      var el = this.DOM.el;
+
+      for (var i = 0; i < el.children.length; i++) {
+        el.children[i].style.transform = "scale(0)";
+      }
+
+      setTimeout(function () {
+        _this3.startAnimation();
+      }, this.animationTime);
+    }
+  }, {
+    key: "startAnimation",
+    value: function startAnimation() {
+      var imageSrc = this.postSrcs[this.index];
+      var el = this.DOM.el;
+
+      for (var i = 0; i < el.children.length; i++) {
+        el.children[i].style.backgroundImage = "url(".concat(imageSrc, ")");
+        el.children[i].style.transform = "scale(1)";
       }
     }
   }]);
