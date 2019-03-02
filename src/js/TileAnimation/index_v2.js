@@ -7,14 +7,15 @@ class TileAnimation {
 
         this.DOM = {el : el};
 
-        this.animationTime = 800;
+        this.animationTime = 810;
 
         this.resizeCanvas = this.resizeCanvas.bind(this);
         this.changeImages = this.changeImages.bind(this);
-
+        this.loadDivs = this.loadDivs.bind(this);
+        this.startAnimation = this.startAnimation.bind(this);
 
         this.resizeCanvas();
-       
+        this.loadPosts();
 
         
 
@@ -33,7 +34,7 @@ class TileAnimation {
             img.onload = ()=>{
                 this.loadedCount += 1;
                 if (this.loadedCount === this.postSrcs.length) {
-                    this.changeImages();
+                    this.loadDivs();
                 }
             }
         });
@@ -42,38 +43,17 @@ class TileAnimation {
         this.DOM.width = this.DOM.el.getBoundingClientRect().width;
         this.DOM.height = window.innerHeight - (this.DOM.el.getBoundingClientRect().top + window.pageYOffset);
         this.DOM.el.style.maxHeight = this.DOM.height + 'px';
-
-        this.loadPosts();
     }
 
 
-    changeImages() {
-        this.index += 1;
-        if (this.index >= this.images.length) {
-            this.index = 0;
-        }
-        const el = this.DOM.el;
-
-        for (let i=0;i<el.children.length;i++) {
-            el.children[i].style.transform = "scale(0)";
-        }
-        
-        setTimeout(()=>{
-            while (el.firstChild) {
-                el.removeChild(el.firstChild);
-            }
-            this.startAnimation();
-        }, this.animationTime);
-        
-    }
-
-
-    startAnimation() {
-        const imageSrc = this.postSrcs[this.index];
-        const image = this.images[this.index];
+    loadDivs() {
+        //called whenever resized
         const {el, width, height} = this.DOM;
-        //width height = window width and height
-        
+        const image = this.images[this.index]
+        while (el.firstChild) {
+            el.removeChild(el.firstChild);
+        }
+
         let numColumns;
         if (width > 1400) {
             numColumns = 25;
@@ -84,9 +64,6 @@ class TileAnimation {
         } else {
             numColumns = 6;
         }
-
-        
-
 
         const squareSize = width / numColumns;
         let numRows = Math.ceil(height / squareSize);
@@ -105,14 +82,14 @@ class TileAnimation {
         //then set scale to 1
         let x = 0;
         let y = 0;
-        function drawTile() {
+        const drawTile = () => {
             if (x >= numColumns) {
                 x = 0;
                 y += 1;
             }
             if (y >= numRows) {
                 setTimeout(()=>{
-                    animate();
+                    this.startAnimation();
                 }, 50);
                 return;
             };
@@ -120,7 +97,7 @@ class TileAnimation {
             const square = document.createElement('div');
             square.classList.add('square');
 
-            square.style.backgroundImage = `url(${imageSrc})`;
+            
             square.style.height = squareSize + 'px';
             square.style.width = squareSize + 'px';
             square.style.backgroundPositionX = -(x * squareSize) + 'px';
@@ -134,16 +111,34 @@ class TileAnimation {
         }
         drawTile();
 
+    }
 
-
-        function animate() {
-            for (let i=0;i<el.children.length;i++) {
-                el.children[i].style.transform = "scale(1)";
-            }
-            
+    changeImages() {
+        this.index += 1;
+        if (this.index >= this.images.length) {
+            this.index = 0;
         }
+        const el = this.DOM.el;
 
-       
+        for (let i=0;i<el.children.length;i++) {
+            el.children[i].style.transform = "scale(0)";
+        }
+        
+        setTimeout(()=>{
+            
+            this.startAnimation();
+        }, this.animationTime);
+        
+    }
+
+
+    startAnimation() {
+        const imageSrc = this.postSrcs[this.index];
+        const {el} = this.DOM;
+        for (let i=0;i<el.children.length;i++) {
+            el.children[i].style.backgroundImage = `url(${imageSrc})`;
+            el.children[i].style.transform = "scale(1)";
+        }      
     }
 }
 
